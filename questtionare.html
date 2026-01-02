@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Career Assessment - Grade 9</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Basic Reset */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: url('https://images.unsplash.com/photo-1581091870627-6a5e80492fa6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2lyY3VpdHxlbnwwfHwwfHw%3D&ixlib=rb-4.0.3&q=80&w=1080') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+  }
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #000;
+  }
+  form {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(0,0,0,0.7);
+    padding: 20px;
+    border-radius: 15px;
+  }
+  .question {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border-left: 5px solid #00ffff;
+    border-radius: 10px;
+  }
+  .question strong { display:block; margin-bottom: 10px; font-size: 1.1rem; }
+  .options label {
+    display: block;
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+  .options input[type="radio"]:checked + span {
+    background: #00ffff;
+    color: #000;
+    font-weight: bold;
+  }
+  .options span {
+    display: inline-block;
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  button {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 35px;
+    border: none;
+    background: #00ffff;
+    color: #000;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  button:hover {
+    background: #00bcd4;
+    color: #fff;
+  }
+  .preview, .result {
+    display: none;
+    max-width: 900px;
+    margin: 20px auto;
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-radius: 15px;
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+  .preview h3, .result h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #00ffff;
+  }
+  .result ul { list-style-type: square; margin-left: 20px; }
+</style>
+</head>
+<body>
+
+<h1>Grade 9 Tech Career Assessment</h1>
+
+<form id="careerQuiz">
+  <div id="quizContainer"></div>
+  <button type="button" onclick="previewAnswers()">Preview Answers</button>
+  <button type="button" onclick="submitQuiz()">Get Detailed Career Insights</button>
+</form>
+
+<div id="preview" class="preview"></div>
+<div id="result" class="result"></div>
+
+<script>
+const questions = [
+  { q: "Do you enjoy solving logical puzzles?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you like experimenting with computers and apps?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Are you comfortable learning new programming languages?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy mathematics and working with numbers?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you like building small projects or apps?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy learning about AI, robots, or cloud technology?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Are you patient when a problem takes multiple attempts to solve?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you like teamwork on technical projects?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy reading about technology trends?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you like analyzing data or spotting patterns?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Are you interested in AI, Data Science, or Machine Learning?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy coding challenges like hackathons or competitions?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy web or app development projects?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Are you willing to spend time learning technical skills independently?", options: ["Always", "Sometimes", "Rarely", "Never"] },
+  { q: "Do you enjoy problem-solving step by step?", options: ["Always", "Sometimes", "Rarely", "Never"] }
+];
+
+// Generate quiz HTML
+const quizContainer = document.getElementById('quizContainer');
+questions.forEach((q,i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<strong>Q${i+1}. ${q.q}</strong>`;
+  const opts = document.createElement('div');
+  opts.className = 'options';
+  q.options.forEach(opt => {
+    opts.innerHTML += `<label><input type="radio" name="q${i}" value="${opt}" required> <span>${opt}</span></label>`;
+  });
+  div.appendChild(opts);
+  quizContainer.appendChild(div);
+});
+
+// Preview function
+function previewAnswers() {
+  const form = document.getElementById('careerQuiz');
+  const formData = new FormData(form);
+  let previewText = "<h3>Your Selected Answers:</h3><ol>";
+  for(let i=0;i<questions.length;i++){
+    const answer = formData.get(`q${i}`) || "No answer";
+    previewText += `<li>${questions[i].q} → <strong>${answer}</strong></li>`;
+  }
+  previewText += "</ol>";
+  const previewDiv = document.getElementById('preview');
+  previewDiv.innerHTML = previewText;
+  previewDiv.style.display = "block";
+}
+
+// Submit function with detailed scoring
+function submitQuiz() {
+  const form = document.getElementById('careerQuiz');
+  const formData = new FormData(form);
+  let score = 0;
+
+  for(let i=0;i<questions.length;i++){
+    const answer = formData.get(`q${i}`);
+    if(answer === "Always") score += 4;
+    else if(answer === "Sometimes") score += 3;
+    else if(answer === "Rarely") score += 1;
+    else score += 0;
+  }
+
+  const resultDiv = document.getElementById('result');
+  let suggestion = "";
+
+  if(score >= 50) {
+    suggestion = `<h3>Excellent Fit for a Tech Career!</h3>
+    <ul>
+      <li><strong>Pros:</strong> Strong logical thinking, curiosity, high motivation, readiness to learn new technologies.</li>
+      <li><strong>Cons:</strong> Need to build experience through projects and internships to maximize potential.</li>
+      <li><strong>Suggested Path:</strong> Computer Science, AI, Data Science, Software Engineering, Cloud Computing.</li>
+      <li><strong>Next Steps:</strong> Start programming in Python/Java, build small apps, participate in coding competitions, explore AI/ML basics.</li>
+    </ul>`;
+  } else if(score >= 35) {
+    suggestion = `<h3>Good Potential, Needs Improvement</h3>
+    <ul>
+      <li><strong>Pros:</strong> Moderate interest and aptitude for tech, enjoys learning and problem-solving at times.</li>
+      <li><strong>Cons:</strong> Needs consistent practice and exposure to coding, math, and technology projects.</li>
+      <li><strong>Suggested Path:</strong> Start with programming basics, small coding challenges, online courses, and gradually build project experience.</li>
+      <li><strong>Next Steps:</strong> Explore web development, participate in school tech clubs, do mini-projects, learn logic and math for programming.</li>
+    </ul>`;
+  } else {
+    suggestion = `<h3>Needs More Exploration Before Choosing Tech</h3>
+    <ul>
+      <li><strong>Pros:</strong> Shows some curiosity in tech.</li>
+      <li><strong>Cons:</strong> Needs to improve math, logical thinking, coding practice, and exposure to real-world projects.</li>
+      <li><strong>Suggested Path:</strong> Take online coding tutorials, join workshops, learn logic puzzles, participate in science/tech fairs.</li>
+      <li><strong>Next Steps:</strong> Focus on foundational skills in math, logical reasoning, basic programming, and gradually explore tech fields.</li>
+    </ul>`;
+  }
+
+  resultDiv.innerHTML = suggestion;
+  resultDiv.style.display = "block";
+  window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
+
+</body>
+</html>
